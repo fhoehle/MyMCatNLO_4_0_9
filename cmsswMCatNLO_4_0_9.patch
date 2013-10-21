@@ -1,0 +1,73 @@
+Common subdirectories: MCatNLO_4_0_9_Base/HW6Analyzer and MCatNLO_4_0_9_Base_new/HW6Analyzer
+Common subdirectories: MCatNLO_4_0_9_Base/HWppAnalyzer and MCatNLO_4_0_9_Base_new/HWppAnalyzer
+diff -u MCatNLO_4_0_9_Base/MCatNLO.Script MCatNLO_4_0_9_Base_new/MCatNLO.Script
+--- MCatNLO_4_0_9_Base/MCatNLO.Script	2012-06-11 15:29:20.000000000 +0200
++++ MCatNLO_4_0_9_Base_new/MCatNLO.Script	2013-10-21 10:40:08.000000000 +0200
+@@ -761,6 +761,8 @@
+ 
+ # wrapper for the functions which run and compile MC codes
+ function runMC {
++echo "runMC not suported in this MC@NLO installation for CMSSW" #added by FH
++exit #added by FH
+ compile MC
+ whichherpdf $HERPDF
+ if [ $pdftype = 1 ]
+diff -u MCatNLO_4_0_9_Base/MCatNLO.inputs MCatNLO_4_0_9_Base_new/MCatNLO.inputs
+--- MCatNLO_4_0_9_Base/MCatNLO.inputs	2012-06-26 14:27:02.000000000 +0200
++++ MCatNLO_4_0_9_Base_new/MCatNLO.inputs	2013-10-21 11:05:53.000000000 +0200
+@@ -246,7 +246,7 @@
+ # prefix for the NLO and MC executables
+ EXEPREFIX=ttb
+ # number of events; set it to 0 to skip the event generation step
+-NEVENTS=500000
++NEVENTS=500
+ # set MCMODE=HW6 for HERWIG6 (Fortran) MCMODE=HWPP for HERWIG++
+ MCMODE=HW6
+ # 0 for weights=+1/-1, 1 for weights whose sum is the total rate
+@@ -291,7 +291,7 @@
+ HERWIGVER="herwig6520.o"
+ # set the following variable equal to the name of the directory where
+ # the PDF grid files are stored. Effective only if PDFLIBRARY=THISLIB
+-PDFPATH="/home/frixione/Physics/PDFgrids/"
++PDFPATH=`scramv1 tool info lhapdf | grep LIBDIR | sed 's/=/\n/g' | tail -1` #"/home/frixione/Physics/PDFgrids/"
+ # set the following variable equal to STATIC or DYNAMIC according to
+ # the type of LHAPDF library one wants to link to
+ LHALINK=DYNAMIC
+@@ -299,14 +299,14 @@
+ # the local version of LHAPDF is installed. We assume that the library,
+ # PDF sets, and configuration script are located in lib/, 
+ # share/lhapdf/PDFsets/, and bin/ respectively
+-LHALIBPATH="/home/frixione/Physics/lhapdf-5.8.5/lhapdf/"
++LHALIBPATH=`scramv1 tool info lhapdf | grep LHAPDF_BASE | sed 's/=/\n/g' | tail -1` #"/home/frixione/Physics/lhapdf-5.8.5/lhapdf/"
+ # set LHAOFL=FREEZE to freeze PDFs from LHAPDF at the boundaries,
+ # =EXTRAPOLATE otherwise. This variable is related to LHAPARM(18)
+ LHAOFL=FREEZE
+ # set the following variable equal to the names of the libraries which 
+ # need be linked. Library names are separated by white spaces. 
+ # Note: LHAPDF is a special case, and must not be included here
+-EXTRALIBS=
++EXTRALIBS="z stdc++"
+ # set the following variable equal to the paths to the libraries which 
+ # need be linked. Library paths are separated by white spaces. 
+ # Note: LHAPDF is a special case, and must not be included here
+diff -u MCatNLO_4_0_9_Base/Makefile MCatNLO_4_0_9_Base_new/Makefile
+--- MCatNLO_4_0_9_Base/Makefile	2012-06-19 18:38:51.000000000 +0200
++++ MCatNLO_4_0_9_Base_new/Makefile	2013-10-21 11:00:07.000000000 +0200
+@@ -17,11 +17,11 @@
+ ifeq ($(shell uname),Linux)
+ ifeq ($(COMPILERTYPE),xGFORTRAN)
+ # Use with 
+-#   F77= gfortran -w -O2 -fno-automatic 
++# F77= gfortran -w -O2 -fno-automatic 
+ # has been tested successfully with IPROC=-16XX and exact mass depedence.
+ F77= g77 -w -fno-automatic
+ else
+-F77= g77 -w -fno-automatic
++F77= gfortran -w -O2 -fno-automatic #g77 -w -fno-automatic
+ endif
+ CPP= g++ $(INCLOPTION)
+ SYSOBJ=trapfpe.o
+Common subdirectories: MCatNLO_4_0_9_Base/include and MCatNLO_4_0_9_Base_new/include
+Common subdirectories: MCatNLO_4_0_9_Base/srcCommon and MCatNLO_4_0_9_Base_new/srcCommon
+Common subdirectories: MCatNLO_4_0_9_Base/srcHerwig6 and MCatNLO_4_0_9_Base_new/srcHerwig6
+Common subdirectories: MCatNLO_4_0_9_Base/srcHerwigpp and MCatNLO_4_0_9_Base_new/srcHerwigpp
